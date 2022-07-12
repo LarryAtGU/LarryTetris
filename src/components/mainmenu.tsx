@@ -4,36 +4,52 @@ import { Routes,Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Table} from "react-bootstrap"
 
+type Props={
+  menus:MenuItem[]
+}
+
+
+type MenuItem={
+  title:string;
+  link:string;
+  cls:string;
+}
+
+const myMenu=[
+  {title:"Main Menu", link:"/mainmenu",cls:"nav-link"},
+  {title:"Top Scores", link:"/topscores",cls:"nav-link"},
+ {title:"Configuration", link:"/config",cls:"nav-link"},
+ {title:"Play", link:"/play",cls:"nav-link text-dark"}
+];
+
+const MyMenuItem:React.FC<MenuItem> =({title, link, cls}) => {
+  return (
+    <li className="list-group-item">
+        <Link to={link} className={cls}>
+          {title}
+        </Link>
+    </li>
+  )
+}
+
+const Mymenu:React.FC<Props> = ({menus}) => {
+  return(
+    <div className="container w-25">
+        <ul className="list-group">
+          {menus.map((itm)=>
+            <MyMenuItem title={itm.title} link={itm.link} cls={itm.cls}></MyMenuItem>
+          )}
+        </ul>
+    </div>
+  )
+}
+
 export default class MainMenu extends Component {
-
   render() {
-
     return (
       <div >
-
-        <ul>
-        <li className="nav-item">
-              <Link to={"/mainmenu"} className="nav-link">
-                Main Menu
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to={"/topscores"} className="nav-link">
-                Top Scores
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to={"/config"} className="nav-link">
-                Configuration
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to={"/play"} className="nav-link text-dark">
-                <b>Play</b>
-              </Link>
-            </li>
-        </ul>
-
+        <h2>Welcome to play LTetris</h2>
+        <Mymenu menus={myMenu}></Mymenu>
       </div>
     );
   }

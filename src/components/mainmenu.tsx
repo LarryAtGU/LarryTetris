@@ -24,7 +24,7 @@ const myMenu=[
 
 const MyMenuItem:React.FC<MenuItem> =({title, link, cls}) => {
   return (
-    <li className="list-group-item">
+    <li className="list-group-item" key={title}>
         <Link to={link} className={cls}>
           {title}
         </Link>

@@ -1,15 +1,33 @@
 import React from 'react';
+import {useState} from 'react';
+
 
 import { Routes,Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import MainMenu from './components/mainmenu';
 import TopScores from './components/topscore';
-import Config from './components/config'
-import Play from './components/play'
+import Config from './components/config';
+import Play from './components/play';
+import Login from './components/login';
 
 import './App.css';
 
+let userId=0;
+let isLogin=false;
+
+export const setLogin = (uId:number)=> {
+  userId=uId;
+  isLogin=true;
+  console.log("islogin: ",isLogin);
+}
+
+
 function App() {
+
+
+
+  
+
   return (
     <div className="App">
 
@@ -44,15 +62,18 @@ function App() {
 
 
       </nav>
-
-    <Routes>
+{
+  isLogin?
+  <Routes>
         <Route path="/mainmenu" element={<MainMenu />}> </Route>
         <Route path="/" element={<MainMenu />}> </Route>
         <Route path="/topscores" element={<TopScores />}> </Route>
         <Route path="/config" element={<Config />}> </Route>
         <Route path="/play" element={<Play />}> </Route>
     </Routes>
-
+  :
+  <Login />
+}
 
     </div>
   );

@@ -12,20 +12,9 @@ import Login from './components/login';
 
 import './App.css';
 
-let userId=0;
-let isLogin=false;
-
-export const setLogin = (uId:number)=> {
-  userId=uId;
-  isLogin=true;
-  console.log("islogin: ",isLogin);
-}
 
 
 function App() {
-
-
-
   
 
   return (
@@ -62,18 +51,8 @@ function App() {
 
 
       </nav>
-{
-  isLogin?
-  <Routes>
-        <Route path="/mainmenu" element={<MainMenu />}> </Route>
-        <Route path="/" element={<MainMenu />}> </Route>
-        <Route path="/topscores" element={<TopScores />}> </Route>
-        <Route path="/config" element={<Config />}> </Route>
-        <Route path="/play" element={<Play />}> </Route>
-    </Routes>
-  :
-  <Login />
-}
+
+    <Login />
 
     </div>
   );

@@ -1,6 +1,7 @@
 import http from "./http-common";
 
 import { User } from "../components/login";
+import {score} from "../components/topscore"
 
 type LogInInfo={
   email:string;
@@ -23,4 +24,10 @@ export class UserDataService {
         return http.delete<any>(`/users/${id}`);
     }
     
+  }
+
+  export class ScoreDataService{
+    getScores() {
+      return http.get<Array<score>>("/scores");
+    }
   }

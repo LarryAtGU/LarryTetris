@@ -1,9 +1,11 @@
-import { Component } from "react";
+import { Component, useEffect, useState } from "react";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Table} from "react-bootstrap"
+import GenPdf from "./genpdf"
+import { ScoreDataService } from "../services/services";
 
-type score ={
+export type score ={
   rank:number;
   name:string;
   score:number;
@@ -15,9 +17,6 @@ type Pros={
 type Pros2={
   sc:score;
 }
-var topScores=[{rank:1,name:"Blue Fish",score:8000},
-          {rank:2,name:"Mier",score:7000},
-          {rank:3,name:"Little Bee",score:6000}];
 
 
 const Score : React.FC<Pros2> = ({sc}) => {
@@ -32,6 +31,28 @@ const Score : React.FC<Pros2> = ({sc}) => {
 
 }         
 const ScoreList:React.FC<Pros>= ({scores}) => {
+  const[topScores, setTopScores]=useState(scores)
+  const[topScoreLoaded,setTopScoreLoaded]=useState(false);
+  useEffect(()=>{
+
+    const service=new ScoreDataService();
+    if(!topScoreLoaded)
+    service.getScores()
+    .then((response: any) => {
+        setTopScores(response.data)
+        setTopScoreLoaded(true);
+    })
+    .catch((e: Error) => {
+        console.log(e);
+    });
+
+
+  });
+
+  const getTopScoresStr = () => {
+    return topScores.map((u)=>({name: u.name, score: ""+u.score}))
+  }
+
   return (
     <div className="w-25 p-3 container">
       <table className="table">
@@ -40,22 +61,24 @@ const ScoreList:React.FC<Pros>= ({scores}) => {
         <th>Name</th>
         <th>Score</th>
         </tr>
-        {scores.map((sc)=>
+        {topScores.map((sc)=>
           <Score sc={sc}></Score>)}
 
       </table>
+      <div>
+        <GenPdf sts={getTopScoresStr()}></GenPdf> 
+      </div>
     </div>
   )
 }
 
 export default class TopScores extends Component {
-
   render() {
 
     return (
       <div >
           <h2>Top Scores</h2>
-        <ScoreList scores={topScores}></ScoreList>
+        <ScoreList scores={[]}></ScoreList>
 
 
       </div>

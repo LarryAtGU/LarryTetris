@@ -1,13 +1,8 @@
 import React from 'react';
-import {useState} from 'react';
 
 
-import { Routes,Route, Link } from "react-router-dom";
+import {  Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import MainMenu from './components/mainmenu';
-import TopScores from './components/topscore';
-import Config from './components/config';
-import Play from './components/play';
 import Login from './components/login';
 
 import './App.css';

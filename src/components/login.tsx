@@ -205,7 +205,7 @@ const [input, setInput] = useState(
         <Route path="/" element={<MainMenu />}> </Route>
         <Route path="/topscores" element={<TopScores />}> </Route>
         <Route path="/config" element={<Config />}> </Route>
-        <Route path="/play" element={<Play />}> </Route>
+        <Route path="/play" element={<Play title={"LTetris"}/>}> </Route>
     </Routes>
     }
 

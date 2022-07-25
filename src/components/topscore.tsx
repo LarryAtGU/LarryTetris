@@ -21,11 +21,10 @@ type Pros2={
 
 const Score : React.FC<Pros2> = ({sc}) => {
   return (
-    <tr>
+    <tr key={sc.rank}>
       <td>{sc.rank}</td>
       <td>{sc.name}</td>
       <td>{sc.score}</td>
-
     </tr>
   )
 
@@ -56,14 +55,15 @@ const ScoreList:React.FC<Pros>= ({scores}) => {
   return (
     <div className="w-25 p-3 container">
       <table className="table">
+      <tbody>
         <tr>
-        <th>Rank</th>
-        <th>Name</th>
-        <th>Score</th>
+          <th>Rank</th>
+          <th>Name</th>
+          <th>Score</th>
         </tr>
         {topScores.map((sc)=>
           <Score sc={sc}></Score>)}
-
+      </tbody>
       </table>
       <div>
         <GenPdf sts={getTopScoresStr()}></GenPdf> 

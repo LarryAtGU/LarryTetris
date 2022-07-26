@@ -71,4 +71,25 @@ export class Shape {
         return colorarr[tp];
 
     }
+
+    getMoveDownPoses():{x:number,y:number}[] {
+        return this.blocks.map((blk)=>
+        ({x:blk.x+this.mx,y:blk.y+this.my+1}));
+    }
+
+    getMoveLeftPoses():{x:number,y:number}[] {
+        return this.blocks.map((blk)=>
+        ({x:blk.x+this.mx-1,y:blk.y+this.my}));
+    }
+
+    getMoveRightPoses():{x:number,y:number}[] {
+        return this.blocks.map((blk)=>
+        ({x:blk.x+this.mx+1,y:blk.y+this.my}));
+    }
+
+    getTurnPoses():{x:number,y:number}[] {
+        return this.blocks.map((blk)=>
+        ({x:this.mx-blk.y,y:this.my+blk.x}));
+    }
+
 }

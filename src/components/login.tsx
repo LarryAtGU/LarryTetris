@@ -17,7 +17,10 @@ export type User={
   password:string;
 }
 
-
+var userLoginID=0;
+export const getUserID = ():number=> {
+    return userLoginID;
+}
 
 
     const Signup : React.FC<User> = ({name,email, password})=> {
@@ -27,7 +30,6 @@ export type User={
 
     const [isSignIn, setIsSignIn] = useState(false)
     const [isLogIn, setLogin]=useState(false);
-    const [userID,setUserID]=useState(0);
 
     const handleSigninOrUp = () =>{
         console.log("in handleSigninor up");
@@ -83,7 +85,7 @@ export type User={
                 else {
                     setErrorMsg("You are registered successfully");
                     setLogin(true);
-                    setUserID(newid);
+                    userLoginID=newid;
                     
                 }
         
@@ -105,7 +107,7 @@ export type User={
                 else {
                     setErrorMsg("You are signed in successfully");
                     setLogin(true);
-                    setUserID(newid);
+                    userLoginID=newid;
                     
                 }
         

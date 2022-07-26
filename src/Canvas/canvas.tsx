@@ -123,18 +123,15 @@ Canvas.defaultProps = {
 const tryInitializeCanvas2= () => {
 
     if(!usingDoubleBuffer) return false;
-    console.log("in init canvas 2", canvas2Initialized);
     if(canvas2Initialized) return true;
 
     var canvas = document.getElementById("mycanvas") as HTMLCanvasElement
     var ctx = canvas.getContext("2d");
-    console.log("ctx:",ctx);
     if(ctx===null) return false;
     canvas2.width=canvas.width;
     canvas2.height=canvas.height;    
 
     var ctx2= canvas2.getContext("2d");
-    console.log("ctx2:",ctx2);
 
     if(ctx2===null) return false;
     canvas2Initialized=true;

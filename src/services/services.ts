@@ -30,4 +30,7 @@ export class UserDataService {
     getScores() {
       return http.get<Array<score>>("/scores");
     }
+    setTopScore(id:number,score:number) {
+      return http.post<{id:number,score:number}>("/scores",{id:id,score:score})
+    }
   }

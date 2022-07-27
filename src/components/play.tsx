@@ -1,22 +1,34 @@
-import { Component, ChangeEvent, KeyboardEventHandler } from "react";
+import { Component } from "react";
 import { Shape } from "./shapes";
 import { getUserID } from "./login";
 
-import React from 'react';
 import Canvas from "../Canvas/canvas";
 import {clearCanvas, drawBox, showCanvas} from '../Canvas/canvas';
 import {ScoreDataService} from '../services/services'
 
+import { getFieldHeight,getFieldWidth } from "./config";
+
 import "bootstrap/dist/css/bootstrap.min.css";
+import ReactDOM from "react-dom";
+
+const soundfile= "http://localhost:3000/mixkit-arcade-game-complete-or-approved-mission-205.wav";
+const musicfile="http://localhost:3000/soft-pad-2018-03-27-korgm3-67676.mp3"
+const soundfile2="http://localhost:3000/mixkit-extra-bonus-in-a-video-game-2045.wav";
+
+const audio1= new Audio(soundfile);
+const audio2= new Audio(soundfile2);
+
+const music = new Audio(musicfile)
+
+music.loop=true;
 
   const boxSize = 20;
-  const fieldWidth=10;
+  var fieldWidth=10;
   const fieldHeight=15;
-  const canvasWidth=(fieldWidth+2)*boxSize
+  const canvasWidth=(fieldWidth+2+5)*boxSize // first 2 are the U shape, anther 5 for new shape
   const canvasHeight=(fieldHeight+1)*boxSize;
   const boardColor="gray"
 
-  var firstLoadPage=true;
 
   var boardMap:number[][];
   
@@ -27,6 +39,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
   let myScore=0;
   let gameOver=false;
   let myMessage="Click the Start to play the game..."
+  let hintShapeType=-1  // no hint shape
+  let hintShape = null as unknown as Shape;
 
   const initGame=()=>{
     if(gameInitalized) return;
@@ -44,10 +58,26 @@ import "bootstrap/dist/css/bootstrap.min.css";
     myMessage="Enjoy the game...."
   }
 
+  const getHintShape = ()=> {
+    if (hintShapeType<0) {
+      hintShapeType= Math.floor(Math.random()*7);
+    }
+    const ret=hintShapeType;
+    hintShapeType= Math.floor(Math.random()*7);
+    hintShape=new Shape(hintShapeType);
+    hintShape.mx=fieldWidth+3;
+    hintShape.my=3;
+    return ret;
+  }
+
+  const drawHintShape = () => {
+    if(hintShape===null) return;
+    drawShape(hintShape,false);
+  }
   const createMyShape=()=>{
     if(gameOver)return;
     if(checkGameOver()) return;
-    myShape=new Shape(Math.floor(Math.random()*7));
+    myShape=new Shape(getHintShape());
     myShape.mx=Math.floor(fieldWidth/2);
   }
 
@@ -55,7 +85,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
     const service=new ScoreDataService();
     service.setTopScore(id,score)
     .then((response: any) => {
-        console.log(response.data);
         const rank=parseInt(response.data.rank);
         if(rank>0) {
             myMessage="Congratulation, you are ranked "+rank+" in top 10."
@@ -99,6 +128,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
     if(ret.length>0) {
       myScore+=addScore[ret.length-1];
       myMessage=sortMsg[ret.length-1];
+      audio1.play();
 
     }
 
@@ -113,7 +143,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
     drawBox(cx,cy,boxSize,boxSize,c);
   }
 
-  const drawShape = (sp:Shape) => {
+  const drawShape = (sp:Shape,moving=true) => {
     const shapeX=sp.mx;
     const shapeY=sp.my;
     const blockNum=sp.getBlockNum();
@@ -122,7 +152,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
     let pos={x:0,y:0};
     for(i=0;i<blockNum;++i){
       pos=sp.getBlockPos(i);
-      drawPosPox(pos.x+shapeX,pos.y+shapeY,col,true);
+      drawPosPox(pos.x+shapeX,pos.y+shapeY,col,moving);
     }
   }
 
@@ -187,6 +217,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
     const fullLines=checkFullRow();
     if(fullLines.length>0) {
+      audio2.play();
       removeFullLines(fullLines);
     }
     createMyShape();
@@ -216,25 +247,38 @@ import "bootstrap/dist/css/bootstrap.min.css";
     return true;
   }
   const moveLeft =( ) => {
-    if(canShapeMove(1)) myShape.mx--;
+    if(canShapeMove(1)) {
+      myShape.mx--;
+      audio1.play();
+    }
+
   }
 
   const moveRight =( ) => {
-    if(canShapeMove(2)) myShape.mx++;
+    if(canShapeMove(2)) {
+      myShape.mx++;
+      audio1.play();
+    }
   }
 
   const moveDown =() => {
-    if(canShapeMove(0)) myShape.my++;
+    if(canShapeMove(0)) {
+      myShape.my++;
+      audio1.play();
+    }
   }
 
   const turnShape = ()=>{
-    if(canShapeMove(3)) myShape.turnClockWise();
+    if(canShapeMove(3)) {
+      myShape.turnClockWise();
+      audio1.play();
+    }
   }
 
   const drawBoard = () => {
     drawBox(0,0,boxSize,canvasHeight,boardColor);
-    drawBox(0,canvasHeight-boxSize,canvasWidth,boxSize,boardColor);
-    drawBox(canvasWidth-boxSize,0,boxSize,canvasHeight,boardColor);
+    drawBox(0,canvasHeight-boxSize,canvasWidth-5*boxSize,boxSize,boardColor);
+    drawBox(canvasWidth-6*boxSize,0,boxSize,canvasHeight,boardColor);
 
   }
 
@@ -242,6 +286,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
     initGame();
     clearCanvas()
     drawBoard();
+    drawHintShape();
     moveShape();
     drawShape(myShape);
     drawBoardBlocks();
@@ -251,8 +296,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 
 type GameState ={
-  count:number;
-  mx:number;
   isRunning:boolean;
   gameScore:number;
   gameMessage:string;
@@ -265,7 +308,6 @@ type GameProp={
 export default class Play extends Component <GameProp,GameState> {
   heartBeat = () => {
     this.setState((state)=>({...state,
-      count: state.count+1,
       gameScore:myScore,
       gameMessage:myMessage,
     }));
@@ -298,18 +340,21 @@ export default class Play extends Component <GameProp,GameState> {
   constructor(prop:GameProp) {
     super(prop);
     this.state = {
-      count: 0,
-      mx:0,
       isRunning:false,
       gameScore:0,
       gameMessage:"Enjoy the game...",
     };
-    if(firstLoadPage) {
-      setInterval(this.heartBeat, 40);
-      firstLoadPage=false;
-
-    }
   }  
+  interval:  NodeJS.Timer | undefined
+
+componentDidMount(): void {
+  music.play();
+  this.interval = setInterval(this.heartBeat, 40);
+}
+  componentWillUnmount() {
+    music.pause();
+    clearInterval(this.interval);
+  }
 
   render() {
 

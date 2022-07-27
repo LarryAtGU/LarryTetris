@@ -21,7 +21,7 @@ type Pros2={
 
 const Score : React.FC<Pros2> = ({sc}) => {
   return (
-    <tr key={sc.rank}>
+    <tr >
       <td>{sc.rank}</td>
       <td>{sc.name}</td>
       <td>{sc.score}</td>
@@ -62,7 +62,7 @@ const ScoreList:React.FC<Pros>= ({scores}) => {
           <th>Score</th>
         </tr>
         {topScores.map((sc)=>
-          <Score sc={sc}></Score>)}
+          <Score key={sc.rank} sc={sc}></Score>)}
       </tbody>
       </table>
       <div>

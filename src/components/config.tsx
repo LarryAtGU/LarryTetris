@@ -10,7 +10,8 @@ export type GameConfig ={
   sound:boolean,
   music:boolean,
   extend:boolean,
-  AI:boolean
+  AI:boolean,
+  level:number
 }
 
 const gameConfig:GameConfig ={
@@ -19,7 +20,8 @@ const gameConfig:GameConfig ={
   sound:true,
   music:true,
   extend:false,
-  AI:false
+  AI:false,
+  level:1,
 
 }
 
@@ -30,7 +32,9 @@ export const getFieldWidth = () => {
 export const getFieldHeight = () => {
   return gameConfig.height;
 }
-
+export const getGameLevel = () => {
+  return gameConfig.level;
+}
 
 type ConfigProp ={
 
@@ -38,7 +42,7 @@ type ConfigProp ={
 export default class Config extends Component <ConfigProp, GameConfig> {
 
   changeWidth = (e: React.ChangeEvent<HTMLInputElement>) => {
-    var val =Math.min(15, Math.max(4,parseInt(e.target.value)));
+    var val =Math.min(15, Math.max(5,parseInt(e.target.value)));
     this.setState({
       ...this.state, width:val
     })
@@ -53,6 +57,16 @@ export default class Config extends Component <ConfigProp, GameConfig> {
       ...this.state, height:val
     })
     gameConfig.height=val;
+
+  }
+
+
+  changeLevel = (e: React.ChangeEvent<HTMLInputElement>) => {
+    var val =Math.min(9, Math.max(1,parseInt(e.target.value)));
+    this.setState({
+      ...this.state, level:val
+    })
+    gameConfig.level=val;
 
   }
 
@@ -93,6 +107,16 @@ export default class Config extends Component <ConfigProp, GameConfig> {
 
         </li>
 
+        <li className="list-group-item" key="level">
+          Field Height:  <input
+                type="number"
+                placeholder="Game Level"
+                value={this.state.height}
+                onChange={this.changeLevel}
+                name="height"
+                />
+
+        </li>
 
         </ul>
     </div>

@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 interface CanvasProps {
   width: number;
   height: number;
+  keyHandle: (key: string) => void;
 }
 
 type Coordinate = {
@@ -14,7 +15,7 @@ var canvas2 = document.createElement('canvas');
 const usingDoubleBuffer = false;
 var canvas2Initialized = false;
 
-const Canvas = ({ width, height }: CanvasProps) => {
+const Canvas = ({ width, height, keyHandle }: CanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isPainting, setIsPainting] = useState(false);
   const [mousePosition, setMousePosition] = useState<Coordinate | undefined>(undefined);
@@ -59,7 +60,8 @@ const Canvas = ({ width, height }: CanvasProps) => {
     canvas.addEventListener('mousemove', paint);
 
     const onKeyDown = (event: KeyboardEvent) => {
-      console.log('Key Down', event.key);
+      keyHandle(event.key);
+      //      console.log('Key Down', event.key);
     };
 
     window.addEventListener('keydown', onKeyDown);

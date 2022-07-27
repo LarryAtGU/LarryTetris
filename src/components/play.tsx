@@ -308,6 +308,9 @@ type GameProp = {
   title: string;
 };
 
+const myKeyPress = (key: string) => {
+  console.log('in mykey ', key);
+};
 export default class Play extends Component<GameProp, GameState> {
   heartBeat = () => {
     this.setState((state) => ({ ...state, gameScore: myScore, gameMessage: myMessage }));
@@ -379,7 +382,7 @@ export default class Play extends Component<GameProp, GameState> {
             <div>
               <p>Score: {this.state.gameScore}</p>
             </div>
-            <Canvas height={this.state.canvasHeight} width={this.state.canvasWidth} />
+            <Canvas height={this.state.canvasHeight} width={this.state.canvasWidth} keyHandle={myKeyPress} />
           </div>
         </div>
       </div>

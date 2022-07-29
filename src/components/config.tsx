@@ -49,7 +49,7 @@ export const getMusic = () => {
 };
 
 export const setMusic = (b: boolean) => {
-  gameConfig.sound = b;
+  gameConfig.music = b;
 };
 
 export const getExtend = () => gameConfig.extend;
@@ -99,7 +99,6 @@ export default class Config extends Component<ConfigProp, GameConfig> {
   changeAI = () => {
     gameConfig.AI = !gameConfig.AI;
   };
-
 
   constructor(prop: ConfigProp) {
     super(prop);
@@ -182,8 +181,7 @@ export default class Config extends Component<ConfigProp, GameConfig> {
                 ) : (
                   <Switch onChange={this.changeAI} />
                 )}
-</li>
-
+              </li>
             </ul>
           </div>
         </div>

@@ -15,6 +15,7 @@ import {
   setMusic,
   setSound,
   getExtend,
+  getAI,
 } from './config';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -45,11 +46,11 @@ const initPage = (w: number, h: number) => {
 
 const boardColor = 'gray';
 
-let boardMap: number[][];
+export let boardMap: number[][];
 
 let offsetY = 0; //
 let sppedY = 1;
-let myShape = null as unknown as Shape;
+export let myShape = null as unknown as Shape;
 let myScore = 0;
 let gameOver = false;
 let myMessage = 'Click the Start to play the game...';
@@ -59,6 +60,7 @@ let hintShape = null as unknown as Shape;
 let hasSound = false;
 let hasMusic = false;
 let hasExtend = false;
+let isAI = false;
 
 const initGame = () => {
   //    if(gameInitalized) return;
@@ -81,6 +83,7 @@ const initGame = () => {
   hasSound = getSound();
   hasMusic = getMusic();
   hasExtend = getExtend();
+  isAI = getAI();
 };
 
 const getHintShape = () => {
@@ -263,7 +266,7 @@ const moveShape = () => {
 const testPosValid = (x: number, y: number): boolean => {
   if (x < 0) return false;
   if (x >= fieldWidth) return false;
-  if (y < 0) return false;
+  if (y < 0) return true; // y has no limitation.
   if (y >= fieldHeight) return false;
   if (boardMap[x][y] !== -1) return false;
   return true;
@@ -350,7 +353,7 @@ const myKeyPress = (key: string) => {
       setSound(hasSound);
       break;
     case 'm':
-    case 'Mmmmss':
+    case 'M':
       hasMusic = !hasMusic;
       setMusic(hasMusic);
 
@@ -359,7 +362,6 @@ const myKeyPress = (key: string) => {
       } else {
         music.pause();
       }
-      setMusic(hasMusic)
       break;
   }
 };
@@ -388,7 +390,6 @@ export default class Play extends Component<GameProp, GameState> {
     initPage(w, h);
     initGame();
 
-    console.log('w, h, ', w, h);
     this.state = {
       isRunning: false,
       gameScore: 0,
@@ -438,6 +439,7 @@ export default class Play extends Component<GameProp, GameState> {
               <p></p>
               <div className="badge bg-primary ">Score: {this.state.gameScore}</div>
               <div className="badge bg-dark ">{hasExtend ? 'Extend mode' : ''}</div>
+              <div className="badge bg-dark ">{isAI ? 'AI play' : ''}</div>
               <p></p>
             </div>
             <Canvas height={this.state.canvasHeight} width={this.state.canvasWidth} keyHandle={myKeyPress} />

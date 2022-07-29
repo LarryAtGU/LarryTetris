@@ -3,7 +3,6 @@ export class Shape {
   my = 0;
   col = 'red';
   colorarr = ['aqua', 'blue', 'maroon', 'yellow', 'green', 'purple', 'red', 'olive', 'fuchsia', 'teal'];
-
   blocks: { x: number; y: number }[];
   type: number;
   constructor(t: number) {
@@ -14,7 +13,7 @@ export class Shape {
   initShape(): void {
     this.col = this.colorarr[this.type];
     switch (this.type) {
-      case 0:
+      case 0: // long four
         this.blocks = [
           { x: -1, y: 0 },
           { x: 0, y: 0 },
@@ -22,7 +21,7 @@ export class Shape {
           { x: 2, y: 0 },
         ];
         break; //long 1
-      case 1:
+      case 1: // L shape
         this.blocks = [
           { x: -1, y: -1 },
           { x: -1, y: 0 },
@@ -134,5 +133,10 @@ export class Shape {
 
   getTurnPoses(): { x: number; y: number }[] {
     return this.blocks.map((blk) => ({ x: this.mx - blk.y, y: this.my + blk.x }));
+  }
+  getShiftRange(w: number) {
+    const left = this.blocks.reduce((ack, blk) => (ack = Math.min(-(blk.x + this.mx), ack)), 0);
+    const right = this.blocks.reduce((ack, blk) => (ack = Math.max(w - blk.x - 1, ack)), 0);
+    return [left, right];
   }
 }

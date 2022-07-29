@@ -6,10 +6,18 @@ import Canvas from '../Canvas/canvas';
 import { clearCanvas, drawBox, showCanvas } from '../Canvas/canvas';
 import { ScoreDataService } from '../services/services';
 
-import { getFieldHeight, getFieldWidth, getGameLevel } from './config';
+import {
+  getFieldHeight,
+  getFieldWidth,
+  getGameLevel,
+  getMusic,
+  getSound,
+  setMusic,
+  setSound,
+  getExtend,
+} from './config';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import ReactDOM from 'react-dom';
 
 const soundfile = 'http://localhost:3000/mixkit-arcade-game-complete-or-approved-mission-205.wav';
 const musicfile = 'http://localhost:3000/soft-pad-2018-03-27-korgm3-67676.mp3';
@@ -23,10 +31,10 @@ const music = new Audio(musicfile);
 music.loop = true;
 
 const boxSize = 20;
-var fieldWidth = 10;
-var fieldHeight = 15;
-var canvasWidth = (fieldWidth + 2 + 5) * boxSize; // first 2 are the U shape, anther 5 for new shape
-var canvasHeight = (fieldHeight + 1) * boxSize;
+let fieldWidth = 10;
+let fieldHeight = 15;
+let canvasWidth = (fieldWidth + 2 + 5) * boxSize; // first 2 are the U shape, anther 5 for new shape
+let canvasHeight = (fieldHeight + 1) * boxSize;
 
 const initPage = (w: number, h: number) => {
   fieldWidth = w;
@@ -37,17 +45,20 @@ const initPage = (w: number, h: number) => {
 
 const boardColor = 'gray';
 
-var boardMap: number[][];
+let boardMap: number[][];
 
 let offsetY = 0; //
 let sppedY = 1;
-let gameInitalized = false;
 let myShape = null as unknown as Shape;
 let myScore = 0;
 let gameOver = false;
 let myMessage = 'Click the Start to play the game...';
 let hintShapeType = -1; // no hint shape
 let hintShape = null as unknown as Shape;
+
+let hasSound = false;
+let hasMusic = false;
+let hasExtend = false;
 
 const initGame = () => {
   //    if(gameInitalized) return;
@@ -63,18 +74,23 @@ const initGame = () => {
   myShape = null as unknown as Shape;
   hintShapeType = -1; // no hint shape
   hintShape = null as unknown as Shape;
-  gameInitalized = true;
   myScore = 0;
   gameOver = false;
   myMessage = 'Enjoy the game....';
+  sppedY = getGameLevel();
+  hasSound = getSound();
+  hasMusic = getMusic();
+  hasExtend = getExtend();
 };
 
 const getHintShape = () => {
+  let shapetypes = 7;
+  if (hasExtend) shapetypes = 10;
   if (hintShapeType < 0) {
-    hintShapeType = Math.floor(Math.random() * 7);
+    hintShapeType = Math.floor(Math.random() * shapetypes);
   }
   const ret = hintShapeType;
-  hintShapeType = Math.floor(Math.random() * 7);
+  hintShapeType = Math.floor(Math.random() * shapetypes);
   hintShape = new Shape(hintShapeType);
   hintShape.mx = fieldWidth + 3;
   hintShape.my = 3;
@@ -139,7 +155,7 @@ const checkFullRow = (): number[] => {
   if (ret.length > 0) {
     myScore += addScore[ret.length - 1];
     myMessage = sortMsg[ret.length - 1];
-    audio1.play();
+    if (hasSound) audio1.play();
   }
 
   return ret;
@@ -222,7 +238,7 @@ const settleShape = () => {
 
   const fullLines = checkFullRow();
   if (fullLines.length > 0) {
-    audio2.play();
+    if (hasSound) audio2.play();
     removeFullLines(fullLines);
   }
   createMyShape();
@@ -230,7 +246,9 @@ const settleShape = () => {
 const moveShape = () => {
   if (myShape == null) createMyShape();
 
-  offsetY += sppedY;
+  const addVal = 1 + (sppedY - 1) * 0.5;
+
+  offsetY += addVal;
   if (offsetY >= boxSize) {
     offsetY = 0;
     if (!canShapeMove(0)) {
@@ -253,28 +271,32 @@ const testPosValid = (x: number, y: number): boolean => {
 const moveLeft = () => {
   if (canShapeMove(1)) {
     myShape.mx--;
-    audio1.play();
+    offsetY = Math.max(boxSize - 2, offsetY); // make it down quicker
+    if (hasSound) audio1.play();
   }
 };
 
 const moveRight = () => {
   if (canShapeMove(2)) {
     myShape.mx++;
-    audio1.play();
+    offsetY = Math.max(boxSize - 2, offsetY); // make it down quicker
+
+    if (hasSound) audio1.play();
   }
 };
 
 const moveDown = () => {
+  offsetY = Math.max(boxSize - 2, offsetY); // make it down quicker
   if (canShapeMove(0)) {
     myShape.my++;
-    audio1.play();
+    if (hasSound) audio1.play();
   }
 };
 
 const turnShape = () => {
   if (canShapeMove(3)) {
     myShape.turnClockWise();
-    audio1.play();
+    if (hasSound) audio1.play();
   }
 };
 
@@ -309,7 +331,37 @@ type GameProp = {
 };
 
 const myKeyPress = (key: string) => {
-  console.log('in mykey ', key);
+  switch (key) {
+    case 'ArrowLeft':
+      moveLeft();
+      break;
+    case 'ArrowRight':
+      moveRight();
+      break;
+    case 'ArrowUp':
+      turnShape();
+      break;
+    case 'ArrowDown':
+      moveDown();
+      break;
+    case 's':
+    case 'S':
+      hasSound = !hasSound;
+      setSound(hasSound);
+      break;
+    case 'm':
+    case 'Mmmmss':
+      hasMusic = !hasMusic;
+      setMusic(hasMusic);
+
+      if (hasMusic) {
+        music.play();
+      } else {
+        music.pause();
+      }
+      setMusic(hasMusic)
+      break;
+  }
 };
 export default class Play extends Component<GameProp, GameState> {
   heartBeat = () => {
@@ -322,7 +374,6 @@ export default class Play extends Component<GameProp, GameState> {
   startRunning = () => {
     if (gameOver) {
       gameOver = false;
-      gameInitalized = false;
       initGame();
       this.setState((s) => ({ ...s, isRunning: true }));
       return;
@@ -349,8 +400,8 @@ export default class Play extends Component<GameProp, GameState> {
   interval: NodeJS.Timer | undefined;
 
   componentDidMount(): void {
-    music.play();
-    this.interval = setInterval(this.heartBeat, 40);
+    if (hasMusic) music.play();
+    this.interval = setInterval(this.heartBeat, 50);
   }
   componentWillUnmount() {
     music.pause();
@@ -380,7 +431,14 @@ export default class Play extends Component<GameProp, GameState> {
           </button>
           <div>
             <div>
-              <p>Score: {this.state.gameScore}</p>
+              <p></p>
+              <div className="bg-light border w-25 container">
+                Level: {sppedY} Sound Effect: {hasSound ? 'on' : 'off'} Music: {hasMusic ? 'on' : 'off'}
+              </div>
+              <p></p>
+              <div className="badge bg-primary ">Score: {this.state.gameScore}</div>
+              <div className="badge bg-dark ">{hasExtend ? 'Extend mode' : ''}</div>
+              <p></p>
             </div>
             <Canvas height={this.state.canvasHeight} width={this.state.canvasWidth} keyHandle={myKeyPress} />
           </div>

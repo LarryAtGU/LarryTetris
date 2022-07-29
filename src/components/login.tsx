@@ -41,7 +41,7 @@ const Signup: React.FC<User> = ({ name, email, password }) => {
   const SingInorUp = () => {
     return (
       <div>
-        <Button variant="contained" onClick={handleSigninOrUp}>
+        <Button variant="text" onClick={handleSigninOrUp}>
           {isSignIn ? 'Switch to Sign Up' : 'Switch to Sign In'}
         </Button>
       </div>
@@ -134,7 +134,7 @@ const Signup: React.FC<User> = ({ name, email, password }) => {
               ''
             ) : (
               <li className="list-group-item">
-                <TextField type="text" placeholder="User Name" value={input.name} onChange={handleChange} name="name" />
+                <input type="text" placeholder="User Name" value={input.name} onChange={handleChange} name="name" />
               </li>
             )}
             <li className="list-group-item">

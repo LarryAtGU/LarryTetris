@@ -37,6 +37,8 @@ let fieldHeight = 15;
 let canvasWidth = (fieldWidth + 2 + 5) * boxSize; // first 2 are the U shape, anther 5 for new shape
 let canvasHeight = (fieldHeight + 1) * boxSize;
 
+let targetScore: number;
+
 const initPage = (w: number, h: number) => {
   fieldWidth = w;
   fieldHeight = h;
@@ -78,6 +80,7 @@ const initGame = () => {
   hintShape = null as unknown as Shape;
   myScore = 0;
   gameOver = false;
+  targetScore = 1000;
   myMessage = 'Enjoy the game....';
   sppedY = getGameLevel();
   hasSound = getSound();
@@ -157,6 +160,11 @@ const checkFullRow = (): number[] => {
   }
   if (ret.length > 0) {
     myScore += addScore[ret.length - 1];
+    if (myScore > targetScore) {
+      targetScore += 1000;
+      sppedY++;
+      if (sppedY > 20) sppedY = 20;
+    }
     myMessage = sortMsg[ret.length - 1];
     if (hasSound) audio1.play();
   }

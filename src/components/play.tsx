@@ -1,10 +1,12 @@
 import { Component } from 'react';
-import { Shape } from './shapes';
+import { Shape, getTypeColor } from './shapes';
 import { getUserID } from './login';
 
 import Canvas from '../Canvas/canvas';
 import { clearCanvas, drawBox, showCanvas } from '../Canvas/canvas';
 import { ScoreDataService } from '../services/services';
+
+import { initAI, getMiniAct } from '../services/ai';
 
 import {
   getFieldHeight,
@@ -63,7 +65,9 @@ let hasSound = false;
 let hasMusic = false;
 let hasExtend = false;
 let isAI = false;
-
+let aIStrages: { shift: number; turn: number }[];
+let aiTurn = 0;
+let aiShift = 0;
 const initGame = () => {
   //    if(gameInitalized) return;
   var col, row;
@@ -94,9 +98,11 @@ const getHintShape = () => {
   if (hasExtend) shapetypes = 10;
   if (hintShapeType < 0) {
     hintShapeType = Math.floor(Math.random() * shapetypes);
+    //  hintShapeType = 0;
   }
   const ret = hintShapeType;
   hintShapeType = Math.floor(Math.random() * shapetypes);
+  //  hintShapeType++;
   hintShape = new Shape(hintShapeType);
   hintShape.mx = fieldWidth + 3;
   hintShape.my = 3;
@@ -180,6 +186,7 @@ const drawPosPox = (x: number, y: number, c: string, hasOffset: boolean) => {
 };
 
 const drawShape = (sp: Shape, moving = true) => {
+  if (sp === null) return;
   const shapeX = sp.mx;
   const shapeY = sp.my;
   const blockNum = sp.getBlockNum();
@@ -197,7 +204,7 @@ const drawBoardBlocks = () => {
   for (col = 0; col < fieldWidth; ++col) {
     for (row = 0; row < fieldHeight; ++row) {
       if (boardMap[col][row] < 0) continue;
-      drawPosPox(col, row, myShape.getTypeColor(boardMap[col][row]), false);
+      drawPosPox(col, row, getTypeColor(boardMap[col][row]), false);
     }
   }
 };
@@ -252,11 +259,41 @@ const settleShape = () => {
     if (hasSound) audio2.play();
     removeFullLines(fullLines);
   }
-  createMyShape();
+  myShape = null as any as Shape;
+  //  createMyShape();
 };
 const moveShape = () => {
-  if (myShape == null) createMyShape();
+  if (myShape == null) {
+    createMyShape();
+    if (isAI) {
+      initAI(boardMap, myShape, fieldWidth, fieldHeight);
+      aIStrages = getMiniAct();
 
+      const select = aIStrages[Math.floor(Math.random() * aIStrages.length)];
+
+      aiShift = select.shift;
+      aiTurn = select.turn;
+    }
+  }
+
+  if (isAI) {
+    if (aiTurn > 0) {
+      turnShape();
+      aiTurn--;
+    } else {
+      if (aiShift !== 0) {
+        if (aiShift > 0) {
+          moveRight();
+          aiShift--;
+        } else {
+          moveLeft();
+          aiShift++;
+        }
+      } else {
+        moveDown();
+      }
+    }
+  }
   const addVal = 1 + (sppedY - 1) * 0.5;
 
   offsetY += addVal;

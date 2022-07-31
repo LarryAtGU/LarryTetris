@@ -1,46 +1,61 @@
-# Getting Started with Create React App
+# Getting Started with LTetris
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+LTetris is a demo prototype for students who are doing Software Engineering course in Griffith University 2022.
 
-## Available Scripts
+Please feel free to downlaod and study this project.
 
-In the project directory, you can run:
+Warning:
+
+1. This project is only for study purpose, you need to build your own solution. Directly copy and made some modification and then submit will be discovered by matching software and may get penalty based on Griffith's policy.
+
+2. This demo is only a prototype to achieve most of the key features for the assignment, it's not a perfect solution. The coding style, design, comments parts are not good enough. When you prepare your assignment, you need to take care all those aspect if you want to get perfect marks.
+
+# Installation.
+
+To run the project, you need firstly install VSCode https://code.visualstudio.com/.
+And then install node.js https://nodejs.org/en/download/
+
+After that, you can enter an empty folder in VSCode, and in the VSCode terminal typeing:
+
+### `git clone https://github.com/LarryAtGU/LarryTetris.git`
+
+to get the client, and then
+
+### `git clone https://github.com/LarryAtGU/tetriserver.git`
+
+to get the server.
+
+Then get into the server diretory by typing:
+
+### `cd tetriserver`
+
+and type
+
+### `npm i`
+
+After that, get into the client directoy by typing
+
+### `cd ../LarryTetris`
+
+and type
+
+### `npm i`
+
+## Run the project
+
+After both server and client are installed, you can get into the server's directory and type
 
 ### `npm start`
 
-Runs the app in the development mode.\
+to start the server.
+
+If the server is successfully start, you can start client. You may need to open another session of VCS and get into the LarryTetris directory and type:
+
+### `npm start`
+
+Then the client will start and run the app in the development mode.\
+
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+To report bugs, please send email to l.wen@griffith.edu.au
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).

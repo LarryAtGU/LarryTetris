@@ -1,8 +1,13 @@
+const colorarr = ['aqua', 'blue', 'maroon', 'yellow', 'green', 'purple', 'red', 'olive', 'fuchsia', 'teal'];
+export const getTypeColor = (t: number) => {
+  if (t >= colorarr.length) return 'white';
+  return colorarr[t];
+};
 export class Shape {
   mx = 0;
   my = 0;
   col = 'red';
-  colorarr = ['aqua', 'blue', 'maroon', 'yellow', 'green', 'purple', 'red', 'olive', 'fuchsia', 'teal'];
+  meaningfulturn = [2, 4, 4, 1, 2, 4, 2, 4, 2, 2];
   blocks: { x: number; y: number }[];
   type: number;
   constructor(t: number) {
@@ -11,7 +16,7 @@ export class Shape {
     this.initShape();
   }
   initShape(): void {
-    this.col = this.colorarr[this.type];
+    this.col = colorarr[this.type];
     switch (this.type) {
       case 0: // long four
         this.blocks = [
@@ -29,7 +34,7 @@ export class Shape {
           { x: 1, y: 0 },
         ];
         break;
-      case 2:
+      case 2: // another L
         this.blocks = [
           { x: -1, y: 0 },
           { x: 0, y: 0 },
@@ -115,8 +120,8 @@ export class Shape {
   }
   getTypeColor(tp: number): string {
     if (tp < 0) return 'white';
-    if (tp >= this.colorarr.length) return 'white';
-    return this.colorarr[tp];
+    if (tp >= colorarr.length) return 'white';
+    return colorarr[tp];
   }
 
   getMoveDownPoses(): { x: number; y: number }[] {
@@ -135,8 +140,18 @@ export class Shape {
     return this.blocks.map((blk) => ({ x: this.mx - blk.y, y: this.my + blk.x }));
   }
   getShiftRange(w: number) {
-    const left = this.blocks.reduce((ack, blk) => (ack = Math.min(-(blk.x + this.mx), ack)), 0);
-    const right = this.blocks.reduce((ack, blk) => (ack = Math.max(w - blk.x - 1, ack)), 0);
+    const left = this.blocks.reduce((ack, blk) => (ack = Math.max(-(blk.x + this.mx), ack)), -100);
+    const right = this.blocks.reduce((ack, blk) => (ack = Math.min(w - blk.x - this.mx - 1, ack)), 100);
+
     return [left, right];
+  }
+  shift(s: number) {
+    this.mx = this.mx + s;
+  }
+  getMeaningfulTurnNum(): number {
+    return this.meaningfulturn[this.type];
+  }
+  drop(d: number) {
+    this.my = this.my + d;
   }
 }

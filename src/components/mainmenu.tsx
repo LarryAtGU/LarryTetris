@@ -1,9 +1,8 @@
-import { Component, ChangeEvent } from 'react';
+import { Component, ChangeEvent, useContext } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Table } from 'react-bootstrap';
-
+import AuthContext from './auth';
 type Props = {
   menus: MenuItem[];
 };
@@ -32,12 +31,18 @@ const MyMenuItem: React.FC<MenuItem> = ({ title, link, cls }) => {
 };
 
 const Mymenu: React.FC<Props> = ({ menus }) => {
+  const ctx = useContext(AuthContext);
   return (
     <div className="container w-25">
       <ul className="list-group">
         {menus.map((itm) => (
           <MyMenuItem key={itm.title} title={itm.title} link={itm.link} cls={itm.cls}></MyMenuItem>
         ))}
+        <li className="list-group-item">
+          <button onClick={ctx.onLogout} className="btn">
+            Logout
+          </button>
+        </li>
       </ul>
     </div>
   );

@@ -1,12 +1,12 @@
-import { Component } from 'react';
+import { Component, useContext } from 'react';
 import { Shape, getTypeColor } from './shapes';
-import { getUserID } from './login';
 
 import Canvas from '../Canvas/canvas';
 import { clearCanvas, drawBox, showCanvas } from '../Canvas/canvas';
 import { ScoreDataService } from '../services/services';
 
 import { initAI, getMiniAct } from '../services/ai';
+import AuthContext from './auth';
 
 import {
   getFieldHeight,
@@ -134,13 +134,16 @@ const trySetGameScore = (id: number, score: number) => {
       console.log(e);
     });
 };
+
+let uid = 0;
+
 const checkGameOver = () => {
   const cx = Math.floor(fieldWidth / 2);
 
   if (boardMap[cx][0] !== -1) {
     gameOver = true;
     myMessage = 'Game Over....';
-    trySetGameScore(getUserID(), myScore);
+    trySetGameScore(uid, myScore);
   }
   return gameOver;
 };
@@ -263,6 +266,7 @@ const settleShape = () => {
   //  createMyShape();
 };
 const moveShape = () => {
+  if (gameOver) return;
   if (myShape == null) {
     createMyShape();
     if (isAI) {
@@ -375,7 +379,7 @@ type GameState = {
 };
 
 type GameProp = {
-  title: string;
+  uid: number;
 };
 
 const myKeyPress = (key: string) => {
@@ -427,9 +431,9 @@ export default class Play extends Component<GameProp, GameState> {
     }
     this.setState((s) => ({ ...s, isRunning: s.isRunning ? false : true }));
   };
-
   constructor(prop: GameProp) {
     super(prop);
+    uid = prop.uid;
     const w = getFieldWidth();
     const h = getFieldHeight();
     initPage(w, h);

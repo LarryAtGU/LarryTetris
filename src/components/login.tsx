@@ -1,14 +1,9 @@
-import { Component, ChangeEvent, useState, useEffect } from 'react';
+import { Component, useContext, useState } from 'react';
 import React from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
 import { UserDataService } from '../services/services';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Table } from 'react-bootstrap';
-import MainMenu from './mainmenu';
-import TopScores from './topscore';
-import Config from './config';
-import Play from './play';
-import { Button, TextField } from '@mui/material';
+import { Button } from '@mui/material';
+import AuthContext from './auth';
 
 export type User = {
   name: string;
@@ -16,19 +11,14 @@ export type User = {
   password: string;
 };
 
-var userLoginID = 0;
-export const getUserID = (): number => {
-  return userLoginID;
-};
-
 const Signup: React.FC<User> = ({ name, email, password }) => {
+  const ctx = useContext(AuthContext);
+
   const [errmsg, setErrorMsg] = useState('Sign up a new user');
 
   const [isSignIn, setIsSignIn] = useState(false);
-  const [isLogIn, setLogin] = useState(false);
 
   const handleSigninOrUp = () => {
-    console.log('in handleSigninor up');
     if (isSignIn) {
       setIsSignIn(false);
       setErrorMsg('Please input your Name, Eamil and password to sign up.');
@@ -74,8 +64,8 @@ const Signup: React.FC<User> = ({ name, email, password }) => {
             setErrorMsg('The email has been registered already.');
           } else {
             setErrorMsg('You are registered successfully');
-            setLogin(true);
-            userLoginID = newid;
+            //            setLogin(true);
+            ctx.onLogin(newid);
           }
         })
         .catch((e: Error) => {
@@ -94,8 +84,9 @@ const Signup: React.FC<User> = ({ name, email, password }) => {
             setErrorMsg(response.data.message);
           } else {
             setErrorMsg('You are signed in successfully');
-            setLogin(true);
-            userLoginID = newid;
+            //            setLogin(true);
+            console.log('before ctx. onLogin ');
+            ctx.onLogin(newid);
           }
         })
         .catch((e: Error) => {
@@ -125,62 +116,42 @@ const Signup: React.FC<User> = ({ name, email, password }) => {
 
   return (
     <div>
-      {!isLogIn ? (
-        <div className="container w-25">
-          <p></p>
-          <p className="Error-msg">{errmsg}</p>
-          <ul className="list-group">
-            {isSignIn ? (
-              ''
-            ) : (
-              <li className="list-group-item">
-                <input type="text" placeholder="User Name" value={input.name} onChange={handleChange} name="name" />
-              </li>
-            )}
+      <div className="container w-25">
+        <p></p>
+        <p className="Error-msg">{errmsg}</p>
+        <ul className="list-group">
+          {isSignIn ? (
+            ''
+          ) : (
             <li className="list-group-item">
-              <input type="text" placeholder="Email" value={input.email} onChange={handleChange} name="email" />
+              <input type="text" placeholder="User Name" value={input.name} onChange={handleChange} name="name" />
             </li>
+          )}
+          <li className="list-group-item">
+            <input type="text" placeholder="Email" value={input.email} onChange={handleChange} name="email" />
+          </li>
 
-            <li className="list-group-item">
-              <input
-                type="password"
-                placeholder="Password"
-                value={input.password}
-                onChange={handleChange}
-                name="password"
-              />
-            </li>
+          <li className="list-group-item">
+            <input
+              type="password"
+              placeholder="Password"
+              value={input.password}
+              onChange={handleChange}
+              name="password"
+            />
+          </li>
 
-            <li className="list-group-item">
-              <Button variant="contained" fullWidth onClick={handleClick}>
-                {isSignIn ? 'Sign In' : 'Sign Up'}
-              </Button>
-            </li>
+          <li className="list-group-item">
+            <Button variant="contained" fullWidth onClick={handleClick}>
+              {isSignIn ? 'Sign In' : 'Sign Up'}
+            </Button>
+          </li>
 
-            <li className="list-group-item">
-              <SingInorUp />
-            </li>
-          </ul>
-        </div>
-      ) : (
-        <Routes>
-          <Route path="/mainmenu" element={<MainMenu />}>
-            {' '}
-          </Route>
-          <Route path="/" element={<MainMenu />}>
-            {' '}
-          </Route>
-          <Route path="/topscores" element={<TopScores />}>
-            {' '}
-          </Route>
-          <Route path="/config" element={<Config />}>
-            {' '}
-          </Route>
-          <Route path="/play" element={<Play title={'LTetris'} />}>
-            {' '}
-          </Route>
-        </Routes>
-      )}
+          <li className="list-group-item">
+            <SingInorUp />
+          </li>
+        </ul>
+      </div>
     </div>
   );
 };

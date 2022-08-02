@@ -1,4 +1,4 @@
-import { Component, useContext } from 'react';
+import { Component } from 'react';
 import { Shape, getTypeColor } from './shapes';
 
 import Canvas from '../Canvas/canvas';
@@ -6,8 +6,8 @@ import { clearCanvas, drawBox, showCanvas } from '../Canvas/canvas';
 import { ScoreDataService } from '../services/services';
 
 import { initAI, getMiniAct } from '../services/ai';
-import AuthContext from './auth';
-
+import Card from './UI/Card/Card';
+import './play.css';
 import {
   getFieldHeight,
   getFieldWidth,
@@ -460,7 +460,7 @@ export default class Play extends Component<GameProp, GameState> {
 
   render() {
     return (
-      <div>
+      <Card className="play">
         <h2>{this.state.gameMessage}</h2>
 
         <div>
@@ -482,7 +482,7 @@ export default class Play extends Component<GameProp, GameState> {
           <div>
             <div>
               <p></p>
-              <div className="bg-light border w-25 container">
+              <div>
                 Level: {sppedY} Sound Effect: {hasSound ? 'on' : 'off'} Music: {hasMusic ? 'on' : 'off'}
               </div>
               <p></p>
@@ -494,7 +494,7 @@ export default class Play extends Component<GameProp, GameState> {
             <Canvas height={this.state.canvasHeight} width={this.state.canvasWidth} keyHandle={myKeyPress} />
           </div>
         </div>
-      </div>
+      </Card>
     );
   }
 }

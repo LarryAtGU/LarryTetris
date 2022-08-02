@@ -12,13 +12,11 @@ import './App.css';
 
 function App() {
   const ctx = useContext(AuthContext);
-  console.log('ctx id ', ctx.id);
   return (
     <div className="App">
       <nav className="navbar navbar-expand navbar-dark bg-dark">
         <div className="navbar-brand">LTetris</div>
-
-        {ctx.id && (
+        {!!ctx.id && (
           <div className="navbar-nav mr-auto">
             <li className="nav-item">
               <Link to={'/mainmenu'} className="nav-link">
@@ -49,7 +47,7 @@ function App() {
         )}
       </nav>
 
-      {ctx.id && (
+      {!!ctx.id && (
         <div>
           <Routes>
             <Route path="/mainmenu" element={<MainMenu />}>

@@ -1,6 +1,7 @@
 import { Component, ChangeEvent, useContext } from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
-
+import { Link } from 'react-router-dom';
+import Card from './UI/Card/Card';
+import './mainmenu.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AuthContext from './auth';
 type Props = {
@@ -33,28 +34,26 @@ const MyMenuItem: React.FC<MenuItem> = ({ title, link, cls }) => {
 const Mymenu: React.FC<Props> = ({ menus }) => {
   const ctx = useContext(AuthContext);
   return (
-    <div className="container w-25">
-      <ul className="list-group">
-        {menus.map((itm) => (
-          <MyMenuItem key={itm.title} title={itm.title} link={itm.link} cls={itm.cls}></MyMenuItem>
-        ))}
-        <li className="list-group-item">
-          <button onClick={ctx.onLogout} className="btn">
-            Logout
-          </button>
-        </li>
-      </ul>
-    </div>
+    <ul className="list-group">
+      {menus.map((itm) => (
+        <MyMenuItem key={itm.title} title={itm.title} link={itm.link} cls={itm.cls}></MyMenuItem>
+      ))}
+      <li className="list-group-item">
+        <button onClick={ctx.onLogout} className="btn">
+          Logout
+        </button>
+      </li>
+    </ul>
   );
 };
 
 export default class MainMenu extends Component {
   render() {
     return (
-      <div>
-        <h2>Welcome to play LTetris</h2>
+      <Card className="mainmenu">
+        <h2>Welcome to LTetris</h2>
         <Mymenu menus={myMenu}></Mymenu>
-      </div>
+      </Card>
     );
   }
 }

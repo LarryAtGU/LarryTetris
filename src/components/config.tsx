@@ -1,10 +1,8 @@
 import { Component, ChangeEvent } from 'react';
-import { Input, Slider, Switch, Checkbox } from '@mui/material';
-import { Routes, Route, Link } from 'react-router-dom';
-
+import { Input, Slider, Switch } from '@mui/material';
+import Card from './UI/Card/Card';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Table } from 'react-bootstrap';
-import { config } from 'process';
+import './config.css';
 
 export type GameConfig = {
   width: number;
@@ -106,86 +104,87 @@ export default class Config extends Component<ConfigProp, GameConfig> {
   }
   render() {
     return (
-      <div>
+      <Card className="config">
         <h2>Configuration</h2>
 
         <div>
-          <div className="container w-25">
-            <ul className="list-group">
-              <li className="list-group-item" key="width">
-                Field Width:{' '}
-                <input
-                  type="number"
-                  placeholder="Field Width"
-                  value={this.state.width}
-                  onChange={this.changeWidth}
-                  name="width"
-                />
-              </li>
+          <ul className="list-group">
+            <li className="list-group-item" key="width">
+              Field Width:{' '}
+              <Input
+                type="number"
+                placeholder="Field Width"
+                value={this.state.width}
+                onChange={this.changeWidth}
+                name="width"
+              />
+            </li>
 
-              <li className="list-group-item" key="height">
-                Field Height:{' '}
-                <input
-                  type="number"
-                  placeholder="Field Height"
-                  value={this.state.height}
-                  onChange={this.changeHeight}
-                  name="height"
-                />
-              </li>
+            <li className="list-group-item" key="height">
+              Field Height:{' '}
+              <Input
+                type="number"
+                placeholder="Field Height"
+                value={this.state.height}
+                onChange={this.changeHeight}
+                name="height"
+              />
+            </li>
 
-              <li className="list-group-item" key="level">
-                Game Level:{' '}
-                <Slider
-                  aria-label="Level"
-                  placeholder="Game Level"
-                  value={this.state.level}
-                  valueLabelDisplay="auto"
-                  marks
-                  step={1}
-                  min={1}
-                  max={9}
-                  onChange={this.changeLevel}
-                  name="level"
-                />
-              </li>
-              <li className="list-group-item" key="sound">
-                Has sound effects:
-                {this.state.sound ? (
-                  <Switch defaultChecked onChange={this.changeSound} />
-                ) : (
-                  <Switch onChange={this.changeSound} />
-                )}
-              </li>
-              <li className="list-group-item" key="music">
-                Music on:
-                {this.state.music ? (
-                  <Switch defaultChecked onChange={this.changeMusic} />
-                ) : (
-                  <Switch onChange={this.changeMusic} />
-                )}
-              </li>
-
-              <li className="list-group-item" key="extend">
-                Extend mode:
-                {this.state.extend ? (
-                  <Switch defaultChecked onChange={this.changeExtend} />
-                ) : (
-                  <Switch onChange={this.changeExtend} />
-                )}
-              </li>
-              <li className="list-group-item" key="ai">
-                AI play:
-                {this.state.AI ? (
-                  <Switch defaultChecked onChange={this.changeAI} />
-                ) : (
-                  <Switch onChange={this.changeAI} />
-                )}
-              </li>
-            </ul>
-          </div>
+            <li className="list-group-item" key="level">
+              Game Level:{' '}
+              <Slider
+                aria-label="Level"
+                placeholder="Game Level"
+                value={this.state.level}
+                valueLabelDisplay="auto"
+                marks
+                step={1}
+                min={1}
+                max={9}
+                onChange={this.changeLevel}
+                name="level"
+              />
+            </li>
+            <li className="list-group-item" key="sound">
+              <div className="grid-container">
+                <div className="grid-item">
+                  Sound effects:
+                  {this.state.sound ? (
+                    <Switch defaultChecked onChange={this.changeSound} />
+                  ) : (
+                    <Switch onChange={this.changeSound} />
+                  )}
+                </div>
+                <div className="grid-item">
+                  Music on:
+                  {this.state.music ? (
+                    <Switch defaultChecked onChange={this.changeMusic} />
+                  ) : (
+                    <Switch onChange={this.changeMusic} />
+                  )}
+                </div>
+                <div className="grid-item">
+                  Extend mode:
+                  {this.state.extend ? (
+                    <Switch defaultChecked onChange={this.changeExtend} />
+                  ) : (
+                    <Switch onChange={this.changeExtend} />
+                  )}
+                </div>
+                <div className="grid-item">
+                  AI play:
+                  {this.state.AI ? (
+                    <Switch defaultChecked onChange={this.changeAI} />
+                  ) : (
+                    <Switch onChange={this.changeAI} />
+                  )}
+                </div>
+              </div>
+            </li>
+          </ul>
         </div>
-      </div>
+      </Card>
     );
   }
 }

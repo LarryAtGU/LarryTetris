@@ -1,0 +1,11 @@
+.config {
+  width: 90%;
+  max-width: 25rem;
+  margin: 2rem auto;
+  padding: 2rem;
+}
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: flex-start;
+}

@@ -2,8 +2,13 @@ import { Component, useContext, useState } from 'react';
 import React from 'react';
 import { UserDataService } from '../services/services';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button } from '@mui/material';
+//import { Button } from '@mui/material';
 import AuthContext from './auth';
+import './login.css';
+
+import Card from './UI/Card/Card';
+import Button from './UI/Button/Button';
+import Input from './UI/Input/Input';
 
 export type User = {
   name: string;
@@ -115,44 +120,30 @@ const Signup: React.FC<User> = ({ name, email, password }) => {
   });
 
   return (
-    <div>
-      <div className="container w-25">
-        <p></p>
-        <p className="Error-msg">{errmsg}</p>
-        <ul className="list-group">
-          {isSignIn ? (
-            ''
-          ) : (
-            <li className="list-group-item">
-              <input type="text" placeholder="User Name" value={input.name} onChange={handleChange} name="name" />
-            </li>
-          )}
-          <li className="list-group-item">
-            <input type="text" placeholder="Email" value={input.email} onChange={handleChange} name="email" />
-          </li>
-
-          <li className="list-group-item">
-            <input
-              type="password"
-              placeholder="Password"
-              value={input.password}
-              onChange={handleChange}
-              name="password"
-            />
-          </li>
-
-          <li className="list-group-item">
-            <Button variant="contained" fullWidth onClick={handleClick}>
-              {isSignIn ? 'Sign In' : 'Sign Up'}
-            </Button>
-          </li>
-
-          <li className="list-group-item">
-            <SingInorUp />
-          </li>
-        </ul>
+    <Card className="login">
+      <p className="Error-msg">{errmsg}</p>
+      {isSignIn ? (
+        ''
+      ) : (
+        <div className="inpdiv">
+          <input type="text" placeholder="User Name" value={input.name} onChange={handleChange} name="name" />
+        </div>
+      )}
+      <div className="inpdiv">
+        <input type="text" placeholder="Email" value={input.email} onChange={handleChange} name="email" />
       </div>
-    </div>
+
+      <div className="inpdiv">
+        <input type="password" placeholder="Password" value={input.password} onChange={handleChange} name="password" />
+      </div>
+
+      <div className="btdiv">
+        <Button onClick={handleClick}>{isSignIn ? 'Sign In' : 'Sign Up'}</Button>
+        <Button variant="text" onClick={handleSigninOrUp}>
+          {isSignIn ? 'Switch to Sign Up' : 'Switch to Sign In'}
+        </Button>
+      </div>
+    </Card>
   );
 };
 

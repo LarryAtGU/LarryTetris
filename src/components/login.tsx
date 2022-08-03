@@ -8,15 +8,15 @@ import './login.css';
 
 import Card from './UI/Card/Card';
 import Button from './UI/Button/Button';
-import Input from './UI/Input/Input';
-
+import ErrorModal from './UI/ErrorModal/ErrorModal';
 export type User = {
   name: string;
   email: string;
   password: string;
+  reportF?: () => void;
 };
 
-const Signup: React.FC<User> = ({ name, email, password }) => {
+const Signup: React.FC<User> = ({ name, email, password, reportF }) => {
   const ctx = useContext(AuthContext);
 
   const [errmsg, setErrorMsg] = useState('Sign up a new user');
@@ -82,19 +82,26 @@ const Signup: React.FC<User> = ({ name, email, password }) => {
       const service = new UserDataService();
       service
         .signinUser(email, password)
-        .then((response: any) => {
-          console.log(response.data);
-          const newid = parseInt(response.data.id);
-          if (newid < 0) {
-            setErrorMsg(response.data.message);
-          } else {
-            setErrorMsg('You are signed in successfully');
-            //            setLogin(true);
-            console.log('before ctx. onLogin ');
-            ctx.onLogin(newid);
+        .then(
+          (response: any) => {
+            console.log(response.data);
+            const newid = parseInt(response.data.id);
+            if (newid < 0) {
+              setErrorMsg(response.data.message);
+            } else {
+              setErrorMsg('You are signed in successfully');
+              //            setLogin(true);
+              ctx.onLogin(newid);
+            }
+          },
+          () => {
+            console.log('in reject section.');
+            if (reportF !== undefined) reportF();
           }
-        })
+        )
         .catch((e: Error) => {
+          console.log('in error handle section.');
+
           console.log(e);
         });
     };
@@ -120,41 +127,66 @@ const Signup: React.FC<User> = ({ name, email, password }) => {
   });
 
   return (
-    <Card className="login">
-      <p className="Error-msg">{errmsg}</p>
-      {isSignIn ? (
-        ''
-      ) : (
+    <React.Fragment>
+      <Card className="login">
+        <p className="Error-msg">{errmsg}</p>
+        {isSignIn ? (
+          ''
+        ) : (
+          <div className="inpdiv">
+            <input type="text" placeholder="User Name" value={input.name} onChange={handleChange} name="name" />
+          </div>
+        )}
         <div className="inpdiv">
-          <input type="text" placeholder="User Name" value={input.name} onChange={handleChange} name="name" />
+          <input type="text" placeholder="Email" value={input.email} onChange={handleChange} name="email" />
         </div>
-      )}
-      <div className="inpdiv">
-        <input type="text" placeholder="Email" value={input.email} onChange={handleChange} name="email" />
-      </div>
 
-      <div className="inpdiv">
-        <input type="password" placeholder="Password" value={input.password} onChange={handleChange} name="password" />
-      </div>
+        <div className="inpdiv">
+          <input
+            type="password"
+            placeholder="Password"
+            value={input.password}
+            onChange={handleChange}
+            name="password"
+          />
+        </div>
 
-      <div className="btdiv">
-        <Button onClick={handleClick}>{isSignIn ? 'Sign In' : 'Sign Up'}</Button>
-        <Button variant="text" onClick={handleSigninOrUp}>
-          {isSignIn ? 'Switch to Sign Up' : 'Switch to Sign In'}
-        </Button>
-      </div>
-    </Card>
+        <div className="btdiv">
+          <Button onClick={handleClick}>{isSignIn ? 'Sign In' : 'Sign Up'}</Button>
+          <Button variant="text" onClick={handleSigninOrUp}>
+            {isSignIn ? 'Switch to Sign Up' : 'Switch to Sign In'}
+          </Button>
+        </div>
+      </Card>
+    </React.Fragment>
   );
 };
 
-export default class Login extends Component {
-  //
+export const Login = () => {
+  const [connectFail, setConnectFail] = useState(false);
 
-  render() {
-    return (
-      <div>
-        <Signup name="" email="" password=""></Signup>
-      </div>
-    );
-  }
-}
+  const handleConfirm = () => {
+    setConnectFail(false);
+  };
+
+  return (
+    <div>
+      {connectFail && (
+        <ErrorModal
+          title="Connection Fail"
+          message="Please check if tetrisserver runs properly"
+          onConfirm={handleConfirm}
+        ></ErrorModal>
+      )}
+
+      <Signup
+        name=""
+        email=""
+        password=""
+        reportF={() => {
+          setConnectFail(true);
+        }}
+      ></Signup>
+    </div>
+  );
+};

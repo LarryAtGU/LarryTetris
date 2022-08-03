@@ -36,8 +36,12 @@
     transform: rotate(360deg);
   }
 }
-
+.absbtn {
+  position: absolute;
+  top: 5px;
+}
 .btn {
+  right: 2rem;
   font: inherit;
   padding: 0.5rem 1.5rem;
   cursor: pointer;

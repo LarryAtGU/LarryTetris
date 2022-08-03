@@ -2,7 +2,7 @@ import React, { createContext } from 'react';
 import { useContext } from 'react';
 import { Link, Route, Routes } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Login from './components/login';
+import { Login } from './components/login';
 import AuthContext from './components/auth';
 import MainMenu from './components/mainmenu';
 import Config from './components/config';
@@ -39,7 +39,7 @@ function App() {
               </Link>
             </li>
             <li className="nav-item">
-              <button className="btn" onClick={ctx.onLogout}>
+              <button className="btn absbtn " onClick={ctx.onLogout}>
                 Logout
               </button>
             </li>
